@@ -2,7 +2,7 @@
 
 
 ## Background
-AI workloads, like text generation or image processing, can be computationally intensive, often requiring significant CPU or GPU resources. FastAPI, built on Python’s `asyncio` and Starlette, excels at handling concurrent requests thanks to its asynchronous architecture. Chapter 5 likely focuses on leveraging async/await to manage multiple AI model inferences simultaneously, reducing latency and improving throughput. We’ll use a text generation model (Hugging Face’s GPT-2) as our example, but the principles apply to any AI workload. This guide assumes you’re familiar with Python, FastAPI basics, and AI model integration (as covered in earlier chapters). We’ll introduce concurrency concepts like async endpoints, background tasks, and thread pools to handle AI workloads efficiently.
+AI workloads, like text generation or image processing, can be computationally intensive, often requiring significant CPU or GPU resources. FastAPI, built on Python’s `asyncio` and Starlette, excels at handling concurrent requests thanks to its asynchronous architecture. Chapter 5 likely focuses on leveraging async/await to manage multiple AI model inferences simultaneously, reducing latency and improving throughput. This project will use a text generation model (Hugging Face’s GPT-2) as our example, but the principles apply to any AI workload. This guide assumes you’re familiar with Python, FastAPI basics, and AI model integration (as covered in earlier chapters). This project will introduce concurrency concepts like async endpoints, background tasks, and thread pools to handle AI workloads efficiently.
 
 **Why Concurrency Matters**:
 - **Scalability**: Handle multiple users without blocking the server.
