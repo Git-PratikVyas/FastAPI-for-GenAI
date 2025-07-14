@@ -471,7 +471,7 @@ async def generate_text_background(request: TextGenerationRequest, background_ta
 
 ---
 
-## Final Dish: Project Structure
+## Project Structure
 ```
 ai-concurrency-service/
 ├── main.py
