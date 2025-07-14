@@ -38,7 +38,6 @@
 
 ## Step 1: Project Environment
 
-**Why**: A clean environment ensures your dependencies don’t clash, like keeping your kitchen counter free of crumbs.
 
 **Instructions**:
 1. Create a project directory and navigate to it:
@@ -76,7 +75,7 @@ torch
 
 ## Step 2: Define Data Models
 
-**Why**: Pydantic models act like recipe cards, defining the structure of your API’s inputs and outputs to ensure consistency and catch errors early.
+**Why**: Pydantic models  defines the structure of your API’s inputs and outputs to ensure consistency and catch errors early.
 
 **Instructions**:
 1. Create a `models.py` file.
@@ -104,7 +103,6 @@ class TextGenerationResponse(BaseModel):
 
 ## Step 3: Integrate the AI Model
 
-**Why**: Integrating the AI model is the heart of your service, like the main ingredient in a dish. FastAPI makes it easy to serve the model’s outputs via an API.
 
 **Instructions**:
 1. Create a `main.py` file.
@@ -162,7 +160,7 @@ async def generate_text(request: TextGenerationRequest):
 
 ## Step 4: Run the FastAPI Server
 
-**Why**: Running the server lets you test your API and explore its interactive documentation, like serving a dish to taste it.
+Running the server lets you test your API and explore its interactive documentation.
 
 **Instructions**:
 1. Start the FastAPI server with Uvicorn:
@@ -190,7 +188,7 @@ curl -X POST "http://127.0.0.1:8000/generate" -H "Content-Type: application/json
 
 ## Step 5: Basic Error Handling
 
-**Why**: Error handling is like seasoning—it makes your service robust and prevents unexpected crashes.
+Error handling to makes sure your service is robust and to prevents unexpected crashes.
 
 **Instructions**:
 The `main.py` file already includes basic input validation. It checks for inappropriate content by using a simple list of forbidden words. If a forbidden word is found, it returns a 400 error.
@@ -203,7 +201,7 @@ The `main.py` file already includes basic input validation. It checks for inappr
 
 ## Step 6: Test the Service
 
-**Why**: Testing ensures your service works as expected, like tasting your dish before serving it to guests.
+Testing ensures your service works as expected.
 
 **Instructions**:
 1. Install testing tools:
@@ -256,7 +254,7 @@ test_main.py ...                                                                
 
 ## Step 7: Optimize Model Serving (Efficient Loading)
 
-**Why**: Loading the AI model efficiently is like preheating your oven—it saves time and resources.
+Loading the AI model efficiently to saves time and resources.
 
 **Instructions**:
 The model is already loaded once at startup in `main.py` (with `generator = pipeline(...)` outside the endpoint). This avoids repeated loading for each request, which significantly improves performance. For large models, you might consider using a dedicated model server like Triton or a cloud-based API to further reduce memory usage and improve scalability.
@@ -269,7 +267,7 @@ The model is already loaded once at startup in `main.py` (with `generator = pipe
 
 ## Step 8: Deploy the Service
 
-**Why**: Deployment makes your service accessible to users, like serving your dish at a restaurant.
+Deployment makes your service accessible to users.
 
 **Instructions**:
 1. Create a `Procfile` for deployment (e.g., on Render):
