@@ -38,8 +38,6 @@ Ready to supercharge your AI service with concurrency? Let’s fire up the stove
 
 ## Step 1: Project Environment
 
-**Why**: A clean environment ensures your dependencies don’t clash, like keeping your kitchen counter free of clutter.
-
 **Instructions**:
 1. Create a project directory:
    ```bash
@@ -81,7 +79,7 @@ httpx==0.27.2
 
 ## Step 2: Define Pydantic Models
 
-**Why**: Pydantic models are your recipe cards, ensuring type-safe inputs and outputs for concurrent requests.
+Pydantic models ensure type-safe inputs and outputs for concurrent requests.
 
 **Instructions**:
 1. Create a `models.py` file.
@@ -110,7 +108,7 @@ class TextGenerationResponse(BaseModel):
 
 ## Step 3: Async Endpoint with Thread Pool
 
-**Why**: AI model inference is CPU-bound, so we’ll use a thread pool to offload it from the async event loop, allowing FastAPI to handle multiple requests concurrently.
+AI model inference is CPU-bound, so we’ll use a thread pool to offload it from the async event loop, allowing FastAPI to handle multiple requests concurrently.
 
 **Instructions**:
 1. Create a `main.py` file.
@@ -183,7 +181,7 @@ async def generate_text(request: TextGenerationRequest):
 
 ## Step 4: Run the FastAPI Server
 
-**Why**: Running the server lets you test concurrency, like serving a dish to see how it holds up under pressure.
+Running the server lets you test concurrency to see how it holds up under pressure.
 
 **Instructions**:
 1. Start the server with Uvicorn:
@@ -220,7 +218,7 @@ ab -n 10 -c 5 -p post_data.json -T application/json http://127.0.0.1:8000/genera
 
 ## Step 5: Content Filtering and Logging
 
-**Why**: Robust error handling and logging ensure your service handles concurrent requests gracefully, like seasoning a dish for balance.
+Robust error handling and logging ensure your service handles concurrent requests gracefully.
 
 **Instructions**:
 1. Update `main.py` to add content filtering for inappropriate prompts.
@@ -294,7 +292,7 @@ async def generate_text(request: TextGenerationRequest):
 
 ## Step 6: Test Concurrency
 
-**Why**: Testing ensures your service handles concurrent requests correctly, like tasting a dish under high demand.
+Testing ensures your service handles concurrent requests correctly.
 
 **Instructions**:
 1. Create a `test_main.py` file to test the API under concurrent loads.
@@ -357,7 +355,7 @@ test_main.py ...                                                                
 
 ## Step 7: Deploy the Service
 
-**Why**: Deployment makes your concurrent AI service accessible, like serving your dish to a crowd.
+Deployment makes your concurrent AI service accessible.
 
 **Instructions**:
 1. Create a `Procfile` for deployment (e.g., on Render):
@@ -374,13 +372,13 @@ test_main.py ...                                                                
 render deploy
 ```
 
-**Pro Tip**: Match the number of Uvicorn workers to your server’s CPU cores for optimal concurrency.
+**Tip**: Match the number of Uvicorn workers to your server’s CPU cores for optimal concurrency.
 
 ---
 
 ## Step 8: Background Tasks for Long-Running Inference
 
-**Why**: Background tasks handle long-running AI workloads without blocking the API, like prepping a side dish while the main course cooks.
+Background tasks handle long-running AI workloads without blocking the API.
 
 **Instructions**:
 1. Update `main.py` to add a background task endpoint for long-running text generation.
@@ -458,7 +456,7 @@ async def generate_text_background(request: TextGenerationRequest, background_ta
     return {"message": "Task queued for background processing", "request_id": request_id}
 ```
 
-**Flavor Notes**:
+
 - The `/generate_background` endpoint queues long-running tasks, returning immediately with a request ID.
 - `BackgroundTasks` ensures the API remains responsive while inference runs in the background.
 
