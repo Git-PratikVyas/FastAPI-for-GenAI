@@ -1,6 +1,5 @@
 # Integrating Databases into AI Services
 
-
 ## Background 
 AI services often need to store inputs (e.g., user prompts), outputs (e.g., generated text), or metadata (e.g., request timestamps) for analytics, auditing, or personalization. This project will focuses on integrating a database with a FastAPI-based AI service to persist data from a generative model, such as Hugging Face’s GPT-2. We’ll use SQLite for simplicity, but the principles apply to other databases like PostgreSQL or MongoDB. FastAPI’s async capabilities and SQLAlchemy’s ORM make database integration seamless, while Pydantic ensures type-safe data handling. This guide assumes familiarity with Python, FastAPI, and AI model integration. We’ll store AI-generated text and metadata, enabling features like history tracking or analytics.
 
@@ -14,7 +13,7 @@ Ready to blend AI and databases? Let’s fire up the stove!
 
 ---
 
-## Recipe: Integrating a Database into a FastAPI AI Service
+## Integrating a Database into a FastAPI AI Service
 
 **Objective**: Build a FastAPI service that integrates a generative AI model (GPT-2) with SQLite to store and retrieve text generation requests and outputs.
 
@@ -119,7 +118,7 @@ class TextGenerationResponse(BaseModel):
     created_at: str = Field(..., description="Timestamp of record creation")
 ```
 
-**Taste Test**:
+
 - `GenerationRecord` defines the SQLite table schema with fields for prompt, generated text, model name, and timestamp.
 - `TextGenerationRequest` validates API inputs.
 - `TextGenerationResponse` formats database records for API responses.
@@ -159,7 +158,7 @@ def get_db():
         db.close()
 ```
 
-**Taste Test**:
+
 - `DATABASE_URL` specifies SQLite (file-based database stored as `ai_service.db`).
 - `check_same_thread=False` is SQLite-specific to allow multi-threaded access.
 - `get_db` provides a database session for dependency injection.
@@ -308,7 +307,7 @@ Content filtering and logging make your service safe and debuggable.
 1. The `main.py` above includes content filtering (`FORBIDDEN_WORDS`) and logging.
 2. Enhance logging to track database operations.
 
-**Taste Test**:
+**Test**:
 - Prompts with “hate” or “violence” return a 400 error.
 - Logs track prompt rejections, database storage, and errors.
 
