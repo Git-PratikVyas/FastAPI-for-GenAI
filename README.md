@@ -14,7 +14,6 @@ Key points about using FastAPI for generative AI include:
 
 - **Deployment and scalability**: FastAPI services can be containerized with Docker and deployed as robust microservices in the cloud. Additionally, FastAPI can be used in serverless architectures (e.g., AWS Lambda with API Gateway) combined with CI/CD pipelines for scalable and cost-effective GenAI APIs
 
-- **Learning resources**: An upcoming O'Reilly book titled *Building Generative AI Services with FastAPI* by Ali Parandeh (expected May 2025) offers a comprehensive guide covering best practices, software engineering patterns, and practical examples for building GenAI services with FastAPI
 
 In summary, FastAPI is well-suited for developing scalable, performant, and secure generative AI backend services, with growing community resources and practical guides to help developers productize generative AI applications efficiently. This includes handling complex AI workloads, streaming outputs, integrating multiple AI modalities, and deploying in cloud or serverless environments
 
