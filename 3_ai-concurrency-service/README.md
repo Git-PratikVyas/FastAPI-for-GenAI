@@ -100,7 +100,7 @@ class TextGenerationResponse(BaseModel):
     request_id: str = Field(..., description="Unique ID for the request")
 ```
 
-**Taste Test**:
+
 - `TextGenerationRequest` validates the prompt and `max_length`.
 - `TextGenerationResponse` includes a `request_id` to track concurrent requests.
 
@@ -171,7 +171,6 @@ async def generate_text(request: TextGenerationRequest):
         raise HTTPException(status_code=500, detail=f"Model inference failed: {str(e)}")
 ```
 
-**Flavor Notes**:
 - `ThreadPoolExecutor` offloads CPU-bound model inference, keeping the async event loop free.
 - `asyncio.get_running_loop()` correctly gets the event loop inside the async function.
 - `loop.run_in_executor` runs the synchronous `run_model_inference` function in a thread.
@@ -284,7 +283,6 @@ async def generate_text(request: TextGenerationRequest):
         raise HTTPException(status_code=500, detail=f"Model inference failed: {str(e)}")
 ```
 
-**Taste Test**:
 - Prompts with “hate” or “violence” are rejected with a 400 error.
 - Logging tracks each request’s lifecycle, aiding debugging in concurrent scenarios.
 
