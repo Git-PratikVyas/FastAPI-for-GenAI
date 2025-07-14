@@ -1,4 +1,4 @@
-# Mastering Concurrency in AI Workloads with FastAPI: A Developer’s Cookbook for Chapter 5
+# Mastering Concurrency in AI Workloads with FastAPI
 
 
 ## Background
