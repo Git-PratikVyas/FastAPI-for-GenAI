@@ -1,4 +1,4 @@
-# Mastering Concurrency in AI Workloads with FastAPI
+# Concurrency in AI Workloads with FastAPI
 
 
 ## Background
