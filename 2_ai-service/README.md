@@ -176,7 +176,8 @@ app = FastAPI(title="Type-Safe AI Service", version="1.0.0")
 generator = pipeline("text-generation", model="gpt2")
 FORBIDDEN_WORDS = ["hate", "violence"]
 
-@app.post("/generate", response_model=TextGenerationResponse)sync def generate_text(body: TextGenerationRequest, request: Request):
+@app.post("/generate", response_model=TextGenerationResponse)
+async def generate_text(body: TextGenerationRequest, request: Request):
     # Check for inappropriate content
     if any(word in body.prompt.lower() for word in FORBIDDEN_WORDS):
         raise HTTPException(status_code=400, detail="Prompt contains inappropriate content")
