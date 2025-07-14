@@ -23,7 +23,7 @@
 
 ## Step 1: Project Environment
 
-**Why**: A clean environment ensures no dependency conflicts, just like a spotless kitchen counter.
+
 
 **Instructions**:
 1. Create a project directory:
@@ -63,7 +63,7 @@ slowapi==0.1.9
 
 ## Step 2: Define Pydantic Models
 
-**Why**: Pydantic models are like precise measuring cups—they ensure inputs and outputs are exactly what you expect, catching errors early.
+Pydantic models are ensure inputs and outputs are exactly what you expect, catching errors early.
 
 **Instructions**:
 1. Create a `models.py` file.
@@ -91,7 +91,7 @@ class TextGenerationResponse(BaseModel):
 
 ## Step 3: Set Up FastAPI
 
-**Why**: FastAPI is the oven that bakes your API, combining speed, type safety, and automatic documentation.
+FastAPI is bakes your API, combining speed, type safety, and automatic documentation.
 
 **Instructions**:
 1. Create a `main.py` file.
@@ -132,7 +132,7 @@ async def generate_text(body: TextGenerationRequest, request: Request):
 
 ## Step 4: Run the FastAPI Server
 
-**Why**: Running the server lets you taste-test your API and explore its interactive docs.
+Running the server lets you taste-test your API and explore its interactive docs.
 
 **Instructions**:
 1. Start the server with Uvicorn:
@@ -160,7 +160,7 @@ curl -X POST "http://127.0.0.1:8000/generate" -H "Content-Type: application/json
 
 ## Step 5: Error Handling and Validation
 
-**Why**: Like a pinch of salt, proper error handling makes your service robust and user-friendly.
+Proper error handling makes your service robust and user-friendly.
 
 **Instructions**:
 1. Update `main.py` to include a content filter for inappropriate prompts.
@@ -201,7 +201,7 @@ FORBIDDEN_WORDS = ["hate", "violence"]
 
 ## Step 6: Test the Service
 
-**Why**: Testing is like tasting your dish before serving—it ensures everything works as expected.
+Testing to ensures everything works as expected.
 
 **Instructions**:
 1. Install testing tools:
@@ -346,7 +346,7 @@ async def generate_text(body: TextGenerationRequest, request: Request):
 
 ---
 
-## Final Dish: Project Structure
+## Project Structure
 ```
 ai-service/
 ├── main.py
