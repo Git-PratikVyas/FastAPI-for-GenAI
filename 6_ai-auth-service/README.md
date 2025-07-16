@@ -430,7 +430,7 @@ async def shutdown_event():
    curl -X POST "http://127.0.0.1:8000/generate" -H "Authorization: Bearer <your-token>" -H "Content-Type: application/json" -d '''{"prompt": "The future of AI is", "max_length": 50}'''
    ```
 
-**Expected Dish**:
+**Expected Result**:
 ```json
 {
   "generated_text": "The future of AI is bright, with machines creating innovative solutions...",
