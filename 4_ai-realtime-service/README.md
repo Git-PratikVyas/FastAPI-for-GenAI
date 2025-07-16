@@ -11,8 +11,6 @@ Real-time communication is essential for interactive applications like chatbots,
 - **Scalability**: Handle multiple clients concurrently with async programming.
 - **Real-World Use**: Power chatbots, live assistants, or interactive content generators.
 
-Ready to build a real-time AI chat service? Let’s get cooking!
-
 ---
 
 ## Real-Time AI Communication with FastAPI WebSockets
