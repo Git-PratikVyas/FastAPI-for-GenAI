@@ -279,7 +279,7 @@ Test the `/generate` endpoint with `curl`:
 curl -X POST "http://127.0.0.1:8000/generate" -H "Content-Type: application/json" -d '{"prompt": "The future of AI is", "max_length": 50}'
 ```
 
-**Expected Dish**:
+**Expected Result**:
 ```json
 {
   "id": 1,
