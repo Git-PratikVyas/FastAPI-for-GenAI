@@ -202,7 +202,7 @@ ab -n 10 -c 5 -p post_data.json -T application/json http://127.0.0.1:8000/genera
 {"prompt": "The future of AI is", "max_length": 50}
 ```
 
-**Expected Dish** (example response):
+**Expected Result** (example response):
 ```json
 {
   "generated_text": "The future of AI is bright, with machines creating innovative solutions...",
