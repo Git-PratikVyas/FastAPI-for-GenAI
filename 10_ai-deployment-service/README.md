@@ -38,6 +38,9 @@ Deploy a FastAPI service with a generative AI model (GPT-2) and PostgreSQL to Re
 
 ---
 
+![screenshot](../images/10_ai-deployment-service.png)
+---
+
 ## Step 1: Project Environment
 
 
