@@ -135,6 +135,10 @@ class TextGenerationResponse(BaseModel):
     model_name: str = Field(..., description="Name of the AI model used")
     created_at: str = Field(..., description="Timestamp of record creation")
 ```
+**Key Snippets**:
+*   `GenerationRecord`: A SQLAlchemy model defining the `generation_records` table schema for storing prompts, generated text, model name, and a timestamp in SQLite.
+*   `TextGenerationRequest`: A Pydantic model for validating API input. It requires a list of `prompts` and an optional `max_length`, ensuring the input data is well-formed.
+*   `TextGenerationResponse`: A Pydantic model that defines the structure of the API's JSON response, ensuring consistency and providing clear documentation for API consumers.
 
 ---
 
@@ -162,6 +166,10 @@ def get_db():
     finally:
         db.close()
 ```
+**Key Snippets (Database)**:
+*   `create_engine`: Establishes the connection to the SQLite database. `check_same_thread=False` is crucial for compatibility with FastAPI's async environment.
+*   `SessionLocal`: Creates a factory for generating new database sessions.
+*   `get_db`: A FastAPI dependency that provides a database session to API endpoints and guarantees the session is closed after the request is complete, preventing resource leaks.
 
 **Code Example (Cache)**:
 ```python
@@ -173,6 +181,9 @@ async def init_cache():
     redis = await Redis(host="localhost", port=6379, db=0, decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 ```
+**Key Snippets (Cache)**:
+*   `init_cache`: An async function that sets up the connection to the Redis server.
+*   `FastAPICache.init`: Initializes `fastapi-cache2` with the Redis backend. The `prefix` helps namespace keys, preventing collisions if the Redis instance is shared.
 
 ---
 
@@ -280,6 +291,13 @@ async def shutdown_event():
     executor.shutdown(wait=True)
     logger.info("Thread pool shutdown")
 ```
+**Key Snippets**:
+*   `generator = pipeline(...)`: Loads the GPT-2 model. `device=-1` specifies CPU usage for broader compatibility.
+*   `executor = ThreadPoolExecutor(...)`: Creates a thread pool to run the synchronous, CPU-intensive model inference without blocking the main async event loop.
+*   `run_batch_inference(...)`: A function that processes a list of prompts at once, which is significantly more efficient than one-by-one processing.
+*   `@cache(expire=60)`: A decorator that caches the endpoint's response in Redis for 60 seconds. Identical subsequent requests are served from the cache, skipping model inference entirely.
+*   `loop.run_in_executor(...)`: The core of the async optimization. It runs the blocking `run_batch_inference` function in a separate thread from the pool, keeping the API responsive.
+*   `@app.on_event("startup")` / `@app.on_event("shutdown")`: Event handlers that manage the application's lifecycle, ensuring the cache is initialized on startup and the thread pool is shut down gracefully.
 
 ---
 
@@ -354,6 +372,11 @@ def test_history_retrieval():
     assert response.status_code == 200
     assert len(response.json()) > 0
 ```
+**Key Snippets**:
+*   `TestClient(app)`: Creates a test client to make requests to the FastAPI app directly within the test suite, avoiding the need for a live server.
+*   `client.post(...)` and `client.get(...)`: Simulate HTTP requests to the API endpoints to test their behavior.
+*   `assert response.status_code == 200`: Verifies that the request was successful.
+*   The tests cover the main success case (batch generation), an error case (forbidden words), and data retrieval (`/history`), ensuring the core features work as expected.
 
 3. Run the tests:
    ```bash
