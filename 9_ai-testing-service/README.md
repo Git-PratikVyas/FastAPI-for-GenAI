@@ -32,6 +32,10 @@ Build a FastAPI service with a generative AI model (GPT-2), store results in SQL
 - Virtual environment (to keep dependencies clean)
 - SQLite (built into Python)
 
+
+**Request Flow Diagram**:
+
+![screenshot](../images/9_ai-testing-service.png)
 ---
 
 ## Step 1: Project Environment
