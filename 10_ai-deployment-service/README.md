@@ -36,7 +36,7 @@ Deploy a FastAPI service with a generative AI model (GPT-2) and PostgreSQL to Re
 - Render account (for cloud hosting)
 
 
-**Data Flow Diagram**:
+**Request Flow Diagram**:
 
 ![screenshot](../images/10_ai-deployment-service.png)
 ---
