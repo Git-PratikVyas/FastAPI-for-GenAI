@@ -16,7 +16,7 @@ Deploying an AI service involves moving your FastAPI application, generative mod
 
 Deploy a FastAPI service with a generative AI model (GPT-2) and PostgreSQL to Render, using Docker for containerization and environment variables for configuration.
 
-**Ingredients**:
+**Libs**:
 - Python 3.9+ (the base for our recipe)
 - FastAPI (for the API framework)
 - Uvicorn (ASGI server with Gunicorn for production)
@@ -36,7 +36,7 @@ Deploy a FastAPI service with a generative AI model (GPT-2) and PostgreSQL to Re
 - Render account (for cloud hosting)
 
 
----
+**Data Flow Diagram**:
 
 ![screenshot](../images/10_ai-deployment-service.png)
 ---
