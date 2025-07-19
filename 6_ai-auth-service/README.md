@@ -38,6 +38,63 @@ Ready to lock down your AI service? Let’s fire up the stove!
 
 ---
 
+### Request Flow Diagram
+```mermaid
+sequenceDiagram
+    participant Client
+    participant FastAPI
+    participant Auth
+    participant UserService
+    participant AIService
+    participant Database
+    participant GPT2Model
+
+    %% Registration Flow
+    Client->>FastAPI: POST /users (Register)
+    FastAPI->>UserService: Create User
+    UserService->>Auth: Hash Password
+    UserService->>Database: Store User
+    Database-->>FastAPI: User Created
+    FastAPI-->>Client: 200 OK (User Response)
+
+    %% Authentication Flow
+    Client->>FastAPI: POST /token (Login)
+    FastAPI->>UserService: Verify Credentials
+    UserService->>Database: Get User
+    Database-->>UserService: User Data
+    UserService->>Auth: Verify Password
+    Auth->>Auth: Generate JWT
+    Auth-->>FastAPI: JWT Token
+    FastAPI-->>Client: 200 OK (Token Response)
+
+    %% Text Generation Flow
+    Client->>FastAPI: POST /generate (with JWT)
+    FastAPI->>Auth: Validate Token
+    Auth->>Database: Get User from Token
+    Database-->>Auth: User Data
+    Auth-->>FastAPI: Authenticated User
+    FastAPI->>AIService: Generate Text
+    AIService->>AIService: Filter Content
+    AIService->>GPT2Model: Run Inference
+    GPT2Model-->>AIService: Generated Text
+    AIService-->>FastAPI: Generation Result
+    FastAPI-->>Client: 200 OK (Text Response)
+
+    %% Admin Flow
+    Client->>FastAPI: GET /admin/users (with JWT)
+    FastAPI->>Auth: Validate Token & Role
+    Auth->>Database: Get User from Token
+    Database-->>Auth: User Data (with Role)
+    Auth-->>FastAPI: Admin User
+    FastAPI->>UserService: List All Users
+    UserService->>Database: Get All Users
+    Database-->>UserService: Users Data
+    UserService-->>FastAPI: Users List
+    FastAPI-->>Client: 200 OK (Users Response)
+```
+
+---
+
 ## Step 1: Project Environment
 
 
