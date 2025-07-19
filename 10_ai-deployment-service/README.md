@@ -38,7 +38,37 @@ Deploy a FastAPI service with a generative AI model (GPT-2) and PostgreSQL to Re
 
 **Request Flow Diagram**:
 
-![screenshot](../images/10_ai-deployment-service.png)
+```mermaid
+sequenceDiagram
+    participant Client
+    participant FastAPI
+    participant ThreadPool
+    participant Model as AI Model
+    participant DB as PostgreSQL
+    
+    Client->>FastAPI: POST /generate
+    FastAPI->>FastAPI: Validate request
+    FastAPI->>ThreadPool: Run model inference
+    ThreadPool->>Model: Generate text
+    Model-->>ThreadPool: Return generated text
+    ThreadPool-->>FastAPI: Return result
+    FastAPI->>DB: Store generation record
+    DB-->>FastAPI: Confirm storage
+    FastAPI-->>Client: Return response
+    
+    Client->>FastAPI: GET /history
+    FastAPI->>DB: Query records
+    DB-->>FastAPI: Return records
+    FastAPI-->>Client: Return response
+```
+
+**Key Component**
+
+- **Client**: End-user or application consuming the AI service API
+- **FastAPI**: Web framework handling HTTP requests, validation, and responses
+- **ThreadPool**: Executor managing concurrent model inference without blocking the main event loop
+- **AI Model**: DistilGPT-2 model from Hugging Face for text generation
+- **PostgreSQL**: Database for storing generation records and history
 ---
 
 ## Step 1: Project Environment
