@@ -39,6 +39,99 @@ AI services, especially those handling user inputs or generating sensitive outpu
 
 
 ---
+## Architecture
+
+The application follows a layered architecture pattern with clear separation of concerns:
+
+```mermaid
+graph TD
+    Client[Client] --> |HTTP Request| Middleware
+    Middleware --> |Security Checks| API[API Layer]
+    API --> |Business Logic| Service[Service Layer]
+    Service --> |Data Access| Repository[Repository Layer]
+    Service --> |AI Processing| Model[AI Model]
+    Repository --> |Storage| Database[(Database)]
+```
+
+### Request Flow Diagram
+
+The following diagram illustrates the detailed flow of a request through each component of the system:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Middleware as Security Middleware
+    participant API as API Endpoint
+    participant Auth as Auth Service
+    participant Validator as Input Validator
+    participant RateLimit as Rate Limiter
+    participant Service as Business Service
+    participant AIModel as AI Model
+    participant DB as Database
+    
+    Client->>Middleware: HTTP Request
+    
+    Note over Middleware: Step 1: Security Headers & CORS
+    Middleware->>Middleware: Add security headers
+    Middleware->>Middleware: Apply CORS policy
+    
+    Note over Middleware,RateLimit: Step 2: Rate Limiting
+    Middleware->>RateLimit: Check request rate
+    alt Rate limit exceeded
+        RateLimit-->>Client: 429 Too Many Requests
+    else Rate limit ok
+        RateLimit-->>Middleware: Proceed
+        
+        Note over Middleware,Auth: Step 3: Authentication
+        Middleware->>Auth: Extract & validate JWT
+        alt Invalid token
+            Auth-->>Client: 401 Unauthorized
+        else Valid token
+            Auth-->>Middleware: User context
+            
+            Note over Middleware,API: Step 4: Route to Endpoint
+            Middleware->>API: Forward request with context
+            
+            Note over API,Validator: Step 5: Input Validation
+            API->>Validator: Validate request body
+            alt Invalid input
+                Validator-->>Client: 422 Unprocessable Entity
+            else Valid input
+                Validator-->>API: Validated data
+                
+                Note over API,Service: Step 6: Business Logic
+                API->>Service: Process request
+                
+                alt Text generation request
+                    Service->>Validator: Sanitize input
+                    Validator-->>Service: Sanitized input
+                    Service->>AIModel: Generate text
+                    AIModel-->>Service: Generated text
+                end
+                
+                Note over Service,DB: Step 7: Data Persistence
+                Service->>DB: Store record
+                DB-->>Service: Confirmation
+                
+                Note over Service,API: Step 8: Response Preparation
+                Service-->>API: Operation result
+                API-->>Middleware: Formatted response
+                
+                Note over Middleware,Client: Step 9: Response Delivery
+                Middleware->>Middleware: Add security headers
+                Middleware-->>Client: HTTP Response
+            end
+        end
+    end
+```
+
+1. **API Layer**: FastAPI endpoints that handle HTTP requests and responses
+2. **Middleware Layer**: Security middleware for headers, rate limiting, and authentication
+3. **Service Layer**: Business logic for user management and AI text generation
+4. **Repository Layer**: Data access layer for user and generation records
+5. **AI Model Layer**: Integration with Hugging Face's GPT-2 model
+
+---
 
 ## Step 1: Project Environment
 
