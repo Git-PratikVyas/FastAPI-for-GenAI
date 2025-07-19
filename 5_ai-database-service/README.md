@@ -34,6 +34,80 @@ AI services often need to store inputs (e.g., user prompts), outputs (e.g., gene
 
 
 ---
+## Architecture
+
+The system follows a layered architecture with clear separation of concerns:
+
+1. **API Layer**: Handles HTTP requests/responses using FastAPI
+2. **Service Layer**: Contains business logic for text generation and content filtering
+3. **Data Access Layer**: Manages database operations using SQLAlchemy ORM
+4. **Model Layer**: Defines data structures using Pydantic and SQLAlchemy models
+
+```mermaid
+graph TD
+    Client[Client] -->|HTTP Request| API[API Layer]
+    API -->|Process Request| Service[Service Layer]
+    Service -->|Generate Text| AI[AI Model]
+    AI -->|Return Text| Service
+    Service -->|Store/Retrieve Data| DAL[Data Access Layer]
+    DAL -->|ORM Operations| DB[(Database)]
+    API -->|HTTP Response| Client
+```
+
+### Request Flow Diagram
+
+The following diagram illustrates the detailed flow of a text generation request through each component of the system:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant FastAPI as FastAPI Router
+    participant Pydantic as Pydantic Validation
+    participant TextService as Text Generation Service
+    participant AI as AI Model
+    participant Repo as Repository
+    participant DB as Database
+    
+    Client->>FastAPI: POST /generate with JSON payload
+    FastAPI->>Pydantic: Validate request body
+    
+    alt Invalid Request
+        Pydantic-->>FastAPI: Validation Error (422)
+        FastAPI-->>Client: 422 Unprocessable Entity
+    else Valid Request
+        Pydantic-->>FastAPI: Valid TextGenerationRequest
+        FastAPI->>TextService: validate_content(prompt)
+        
+        alt Contains Forbidden Content
+            TextService-->>FastAPI: False (Invalid Content)
+            FastAPI-->>Client: 400 Bad Request
+        else Content OK
+            TextService-->>FastAPI: True (Valid Content)
+            FastAPI->>TextService: generate_text(prompt, max_length)
+            TextService->>AI: Run model inference
+            AI-->>TextService: Return generated text
+            TextService-->>FastAPI: Return generated text
+            
+            FastAPI->>Repo: create_record(db, prompt, text, model)
+            Repo->>DB: Begin transaction
+            Repo->>DB: Insert record
+            DB-->>Repo: Return record ID
+            Repo->>DB: Commit transaction
+            Repo-->>FastAPI: Return record
+            
+            FastAPI->>FastAPI: Format response
+            FastAPI-->>Client: 200 OK with TextGenerationResponse
+        end
+    end
+```
+1. Initial request validation using Pydantic
+2. Content filtering in the service layer
+3. Text generation using the AI model
+4. Database transaction for storing the record
+5. Response formatting and delivery
+6. Error handling at each step
+
+---
 
 ## Step 1: Project Environment
 
