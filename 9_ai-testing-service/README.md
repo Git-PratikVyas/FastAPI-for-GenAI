@@ -32,10 +32,71 @@ Build a FastAPI service with a generative AI model (GPT-2), store results in SQL
 - Virtual environment (to keep dependencies clean)
 - SQLite (built into Python)
 
-
+---
 **Request Flow Diagram**:
 
-![screenshot](../images/9_ai-testing-service.png)
+The following diagram illustrates the detailed flow of a request through the system components:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant FastAPI
+    participant Pydantic
+    participant ContentFilter
+    participant ThreadPool
+    participant AIModel
+    participant SQLAlchemy
+    participant Database
+    
+    Client->>FastAPI: POST /generate with prompt
+    FastAPI->>Pydantic: Validate request body
+    
+    alt Invalid Request
+        Pydantic-->>FastAPI: Validation Error
+        FastAPI-->>Client: 422 Unprocessable Entity
+    else Valid Request
+        Pydantic-->>FastAPI: Validated Request
+        FastAPI->>ContentFilter: Check for forbidden words
+        
+        alt Contains Forbidden Words
+            ContentFilter-->>FastAPI: Content Violation
+            FastAPI-->>Client: 400 Bad Request
+        else Content OK
+            ContentFilter-->>FastAPI: Content Approved
+            FastAPI->>ThreadPool: Submit model inference task
+            ThreadPool->>AIModel: Generate text
+            AIModel-->>ThreadPool: Generated text
+            ThreadPool-->>FastAPI: Generated text
+            
+            FastAPI->>SQLAlchemy: Create record
+            SQLAlchemy->>Database: Insert record
+            Database-->>SQLAlchemy: Record ID
+            SQLAlchemy-->>FastAPI: Record with ID
+            
+            FastAPI-->>Client: 200 OK with generated text
+        end
+    end
+    
+    Client->>FastAPI: GET /history
+    FastAPI->>SQLAlchemy: Query all records
+    SQLAlchemy->>Database: SELECT query
+    Database-->>SQLAlchemy: Records
+    SQLAlchemy-->>FastAPI: Records
+    FastAPI-->>Client: 200 OK with records
+```
+
+**Key Component**
+
+- **Client**: External user or system sending HTTP requests to the API endpoints
+- **FastAPI**: Web framework handling HTTP requests, routing, and dependency injection
+- **Pydantic**: Data validation library ensuring request data meets defined schemas
+- **ContentFilter**: Component checking for inappropriate content in user prompts
+- **ThreadPool**: ThreadPoolExecutor managing concurrent model inference tasks
+- **AIModel**: Hugging Face Transformers pipeline running the GPT-2 model
+- **SQLAlchemy**: ORM library managing database operations and object mapping
+- **Database**: SQLite database storing generation records and history
+
+
 ---
 
 ## Step 1: Project Environment
