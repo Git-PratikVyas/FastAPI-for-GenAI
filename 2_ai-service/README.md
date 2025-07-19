@@ -21,6 +21,81 @@
 
 ---
 
+### Request Flow Diagram
+
+The following diagram illustrates the detailed flow of a request through each component of the system:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant RateLimiter
+    participant FastAPI
+    participant PydanticValidator
+    participant ContentFilter
+    participant TextGenerator
+    participant HuggingFaceModel
+    participant Logger
+    
+    Client->>FastAPI: POST /generate with JSON payload
+    FastAPI->>Logger: Log incoming request
+    FastAPI->>RateLimiter: Check rate limit
+    
+    alt Rate limit exceeded
+        RateLimiter->>FastAPI: 429 Too Many Requests
+        FastAPI->>Logger: Log rate limit exceeded
+        FastAPI->>Client: Return 429 error
+    else Rate limit OK
+        RateLimiter->>FastAPI: Proceed
+        FastAPI->>PydanticValidator: Validate request body
+        
+        alt Invalid request
+            PydanticValidator->>FastAPI: Validation error
+            FastAPI->>Logger: Log validation error
+            FastAPI->>Client: Return 422 error
+        else Valid request
+            PydanticValidator->>FastAPI: Validated TextGenerationRequest
+            FastAPI->>ContentFilter: Check for inappropriate content
+            
+            alt Contains inappropriate content
+                ContentFilter->>FastAPI: Content violation
+                FastAPI->>Logger: Log content violation
+                FastAPI->>Client: Return 400 error
+            else Content OK
+                ContentFilter->>FastAPI: Content approved
+                FastAPI->>TextGenerator: Generate text with prompt
+                TextGenerator->>HuggingFaceModel: Request text generation
+                HuggingFaceModel->>TextGenerator: Return generated text
+                
+                alt Generation error
+                    TextGenerator->>FastAPI: Generation error
+                    FastAPI->>Logger: Log generation error
+                    FastAPI->>Client: Return 500 error
+                else Generation success
+                    TextGenerator->>FastAPI: Generated text and model name
+                    FastAPI->>PydanticValidator: Create and validate TextGenerationResponse
+                    PydanticValidator->>FastAPI: Validated response
+                    FastAPI->>Logger: Log successful generation
+                    FastAPI->>Client: Return 200 with response
+                end
+            end
+        end
+    end
+```
+
+**Key Component**
+
+- **Client**: External system or user that sends HTTP requests to the API.
+- **RateLimiter**: Controls request frequency using client IP address, limiting to 5 requests per minute.
+- **FastAPI**: Web framework that handles routing, request parsing, and response formatting.
+- **PydanticValidator**: Validates request/response data against defined schemas with type checking.
+- **ContentFilter**: Screens input prompts for inappropriate content using a list of forbidden words.
+- **TextGenerator**: Orchestrates the text generation process and handles errors.
+- **HuggingFaceModel**: Pre-trained GPT-2 model that performs the actual text generation.
+- **Logger**: Records system events, requests, responses, and errors for monitoring and debugging.
+
+
+---
+
 ## Step 1: Project Environment
 
 
