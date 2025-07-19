@@ -36,6 +36,73 @@ Ready to supercharge your AI service with concurrency? Let’s fire up the stove
 
 ---
 
+### Request Flow Diagram
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant FastAPI
+    participant Pydantic
+    participant ContentFilter
+    participant ThreadPool
+    participant AIModel
+    participant BackgroundTasks
+    participant Logger
+    
+    %% Standard Request Flow
+    Note over Client,FastAPI: Synchronous Request Flow
+    Client->>FastAPI: POST /generate
+    Note right of FastAPI: Key Component: Request Handling
+    FastAPI->>Pydantic: Validate Request
+    Note right of Pydantic: Key Component: Input Validation
+    Pydantic-->>FastAPI: Validated Data
+    FastAPI->>ContentFilter: Check Content
+    Note right of ContentFilter: Key Component: Content Filtering
+    ContentFilter-->>FastAPI: Content OK
+    FastAPI->>ThreadPool: Submit Inference Task
+    Note right of ThreadPool: Key Component: Concurrency Management
+    ThreadPool->>AIModel: Run Inference
+    Note right of AIModel: Key Component: AI Model Execution
+    AIModel-->>ThreadPool: Generated Text
+    ThreadPool-->>FastAPI: Inference Result
+    FastAPI->>Logger: Log Completion
+    Note right of Logger: Key Component: Monitoring
+    FastAPI->>Pydantic: Create Response
+    FastAPI-->>Client: JSON Response
+    
+    %% Background Task Flow
+    Note over Client,FastAPI: Background Task Flow
+    Client->>FastAPI: POST /generate_background
+    Note right of FastAPI: Key Component: Async Request Handling
+    FastAPI->>Pydantic: Validate Request
+    Pydantic-->>FastAPI: Validated Data
+    FastAPI->>ContentFilter: Check Content
+    ContentFilter-->>FastAPI: Content OK
+    FastAPI->>BackgroundTasks: Add Task
+    Note right of BackgroundTasks: Key Component: Background Processing
+    FastAPI-->>Client: Task ID Response
+    Note right of Client: Key Component: Non-blocking Response
+    BackgroundTasks->>ThreadPool: Submit Inference Task
+    ThreadPool->>AIModel: Run Inference
+    AIModel-->>ThreadPool: Generated Text
+    ThreadPool-->>BackgroundTasks: Inference Result
+    BackgroundTasks->>Logger: Log Result
+    Note right of Logger: Key Component: Async Monitoring
+```
+
+**Key Component**
+
+- **Request Handling**: FastAPI's async endpoints that manage the complete HTTP request lifecycle with proper routing and response formatting.
+- **Input Validation**: Pydantic models that enforce data constraints and prevent malformed data from reaching application logic.
+- **Content Filtering**: System that screens input text for inappropriate content and rejects prohibited requests.
+- **Concurrency Management**: ThreadPoolExecutor that offloads CPU-bound tasks from the async event loop to prevent resource exhaustion.
+- **AI Model Execution**: Efficient loading and execution of the GPT-2 model with proper parameter management and error handling.
+- **Monitoring**: Comprehensive logging system that tracks request IDs and performance metrics throughout the request lifecycle.
+- **Async Request Handling**: Implementation of FastAPI's async/await pattern to maintain event loop responsiveness during processing.
+- **Background Processing**: FastAPI's BackgroundTasks for queuing long-running operations independent of the request/response cycle.
+- **Non-blocking Response**: Immediate acknowledgment system that returns request IDs while processing continues in the background.
+
+---
 ## Step 1: Project Environment
 
 **Instructions**:
