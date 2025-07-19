@@ -32,7 +32,69 @@ Real-time communication is essential for interactive applications like chatbots,
 - Code editor (e.g., VS Code)
 - Virtual environment (to keep dependencies clean)
 - Browser or WebSocket client (e.g., JavaScript or Python client)
+---
 
+### Request Flow Diagram
+
+The following diagram illustrates the detailed flow of a request through each component of the system:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant WebSocket as WebSocket Handler
+    participant Validator as Message Validator
+    participant Filter as Content Filter
+    participant ThreadPool as Thread Pool Executor
+    participant AIModel as AI Model
+    participant Formatter as Response Formatter
+    participant Logger
+
+    Client->>WebSocket: Connect to WebSocket
+    WebSocket->>WebSocket: Generate client ID
+    WebSocket->>Logger: Log connection event
+    WebSocket->>Client: Connection accepted
+
+    Client->>WebSocket: Send prompt message
+    WebSocket->>Logger: Log message received
+    WebSocket->>Validator: Validate message format
+    
+    alt Valid message
+        Validator->>Filter: Check content
+        
+        alt Content allowed
+            Filter->>ThreadPool: Submit for processing
+            ThreadPool->>AIModel: Run model inference
+            AIModel->>Logger: Log inference time
+            AIModel->>ThreadPool: Return generated text
+            ThreadPool->>Formatter: Format response
+            Formatter->>WebSocket: Send formatted response
+            WebSocket->>Client: Deliver response
+            WebSocket->>Logger: Log response sent
+        else Content not allowed
+            Filter->>Formatter: Create error response
+            Formatter->>WebSocket: Send error response
+            WebSocket->>Client: Deliver error response
+            WebSocket->>Logger: Log content rejection
+        end
+    else Invalid message
+        Validator->>Formatter: Create error response
+        Formatter->>WebSocket: Send error response
+        WebSocket->>Client: Deliver error response
+        WebSocket->>Logger: Log validation error
+    end
+
+    Client->>WebSocket: Disconnect
+    WebSocket->>Logger: Log disconnection
+    WebSocket->>WebSocket: Clean up resources
+```
+
+1. **WebSocket Handler**: Manages WebSocket connections, message reception, and response delivery.
+2. **Message Validator**: Validates incoming messages against defined schemas.
+3. **Content Filter**: Filters out inappropriate content from prompts.
+4. **Thread Pool Executor**: Manages concurrent AI model inference tasks.
+5. **AI Model**: Processes prompts and generates responses.
+6. **Response Formatter**: Formats AI model outputs into structured responses.
+7. **Logger**: Logs system events, errors, and performance metrics.
 
 ---
 
