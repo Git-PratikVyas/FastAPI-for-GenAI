@@ -35,6 +35,59 @@
 - Once the server is running, you can access the API documentation at http://127.0.0.1:8000/docs in your web browser.
 
 ---
+### Request Flow Diagram
+
+The following diagram illustrates the detailed flow of a text generation request through each component of the system:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant FastAPI as FastAPI Router
+    participant Pydantic as Pydantic Validation
+    participant ContentFilter as Content Filter
+    participant ModelService as Model Service
+    participant AIModel as AI Model (GPT-2)
+    
+    Client->>FastAPI: POST /generate {prompt, params}
+    FastAPI->>Pydantic: Validate request body
+    
+    alt Invalid Request
+        Pydantic-->>FastAPI: Validation Error (422)
+        FastAPI-->>Client: HTTP 422 Validation Error
+    else Valid Request
+        Pydantic-->>FastAPI: Valid TextGenerationRequest
+        FastAPI->>ContentFilter: Check for inappropriate content
+        
+        alt Inappropriate Content
+            ContentFilter-->>FastAPI: Content Violation
+            FastAPI-->>Client: HTTP 400 Bad Request
+        else Appropriate Content
+            ContentFilter-->>FastAPI: Content Approved
+            FastAPI->>ModelService: generate_text(prompt, params)
+            ModelService->>AIModel: Generate text with parameters
+            
+            alt Model Error
+                AIModel-->>ModelService: Inference Error
+                ModelService-->>FastAPI: Exception
+                FastAPI-->>Client: HTTP 500 Server Error
+            else Success
+                AIModel-->>ModelService: Generated Text
+                ModelService-->>FastAPI: TextGenerationResponse
+                FastAPI-->>Client: HTTP 200 OK with response
+            end
+        end
+    end
+```
+
+**Key Component**
+
+- **Client**: External system or user sending HTTP requests to the API
+- **FastAPI Router**: Handles routing of HTTP requests to appropriate endpoint handlers
+- **Pydantic Validation**: Validates incoming request data against defined schemas
+- **Content Filter**: Checks text prompts for inappropriate content
+- **Model Service**: Manages AI model operations and business logic
+- **AI Model (GPT-2)**: The actual transformer model that generates text responses
+---
 
 ## Step 1: Project Environment
 
