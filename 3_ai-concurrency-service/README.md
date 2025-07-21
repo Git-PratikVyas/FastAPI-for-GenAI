@@ -38,6 +38,7 @@ AI workloads, like text generation or image processing, can be computationally i
 ### Request Flow Diagram
 
 ```mermaid
+%%{init: {'theme': 'default'}}%%
 sequenceDiagram
     participant Client
     participant FastAPI
